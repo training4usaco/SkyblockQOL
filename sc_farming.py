@@ -24,7 +24,7 @@ def random_order_funcs(funcs: list['func']):
     random.shuffle(funcs)
     for func in funcs:
         func(coeff)
-        coeff *= 5
+        coeff *= 3
 
 def start_left(coeff = 1):
     random_stop(coeff)
