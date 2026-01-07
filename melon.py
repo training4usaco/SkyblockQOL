@@ -2,9 +2,12 @@ from system.lib import minescript
 import time
 import random
 
-minescript.execute("warp garden home")
+#-141 67.9 -143.3 
+#yaw 0.0 pitch -59.0
+#400 speed
+minescript.execute("warp garden home") 
 
-time.sleep(0.5)
+time.sleep(1)
 minescript.player_set_orientation(0,-59.0)
 start_pos = minescript.player_position()
 
@@ -31,4 +34,4 @@ while(True):
     if(pos[2]>-103):
         time.sleep(2+random.uniform(0,1))
         minescript.execute("warp garden home")
-        time.sleep(0.5)
+        time.sleep(1)
