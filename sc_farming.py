@@ -2,16 +2,21 @@ import os
 import time
 import random
 
+import init
 from system.lib import minescript
 import json
 
 
 lane_start_position = minescript.player_position()
-if os.path.exists("home_pos.json"):
-    with open("home_pos.json", "r") as f:
-        FARM_START_POSITION = json.load(f)
-else:
+if os.path.exists(init.macro_info_file_path):
+    with open(init.macro_info_file_path, "r") as f:
+        data = json.load(f)
+        FARM_START_POSITION = data["farm_start"]
+if FARM_START_POSITION is None:
     FARM_START_POSITION = minescript.player_position()
+if data is None:
+    data = {}
+
 minescript.echo(f"Loaded home location: {FARM_START_POSITION}")
 
 FARMING_X_OFFSET = random.randint(1, 15) / 10
@@ -21,10 +26,30 @@ offset1 = random.randint(1, 8) / 10
 offset2 = random.randint(1, 8) / 10
 
 def random_stop(coeff = 1):
+    global data
     if (random.randint(1, 7 * coeff) <= 3):
-        time.sleep(random.randint(1, 6) / 10)
+        pause_time = random.randint(1, 6) / 10
+
+        data['pause_time'] = pause_time
+        with open(init.macro_info_file_path, "w") as f:
+            json.dump(data, f, indent = 4)
+
+        time.sleep(pause_time)
+        data['pause_time'] = 0.0
+        with open(init.macro_info_file_path, "w") as f:
+            json.dump(data, f, indent = 4)
     elif (random.randint(1, 50 * coeff) == 1):
-        time.sleep(random.randint(100, 150) / 10)
+        pause_time = random.randint(100, 150) / 10
+
+        data['pause_time'] = pause_time
+        with open(init.macro_info_file_path, "w") as f:
+            json.dump(data, f, indent=4)
+
+        time.sleep(pause_time)
+        data['pause_time'] = 0.0
+        with open(init.macro_info_file_path, "w") as f:
+            json.dump(data, f, indent = 4)
+
 
 def random_order_funcs(funcs: list['func']):
     coeff = 1
@@ -57,8 +82,12 @@ def stop_attack(_coeff = 1):
     minescript.player_press_attack(False)
 
 def should_continue():
-    return ((minescript.player_position()[0] < (FARM_START_POSITION[0] + 89 - FARMING_X_OFFSET))
-    or (minescript.player_position()[2] < (FARM_START_POSITION[2] + 186 - FARMING_Z_OFFSET)))
+    return ((minescript.player_position()[0] < (FARM_START_POSITION[0] + data['farm_width'] - FARMING_X_OFFSET))
+    or (minescript.player_position()[2] < (FARM_START_POSITION[2] + data['farm_length'] - FARMING_Z_OFFSET)))
+
+data['active'] = True
+with open(init.macro_info_file_path, "w") as f:
+    json.dump(data, f, indent = 4)
 
 while True:
     lane_start_position = minescript.player_position()
