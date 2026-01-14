@@ -11,7 +11,7 @@ def macro_check_alert():
     script = 'activate application "Prism Launcher"'
     os.system(f"osascript -e '{script}'")
     minescript.echo("MACRO CHECK ALERT!!!!!!!!!")
-    time.sleep(random.randint(15, 25) / 10)
+    time.sleep(random.randint(5, 15) / 10)
     minescript.execute("\stop")
     sys.exit(0)
 
