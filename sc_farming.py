@@ -1,11 +1,18 @@
+import os
 import time
 import random
 
 from system.lib import minescript
-import sys
+import json
+
 
 lane_start_position = minescript.player_position()
-FARM_START_POSITION = minescript.player_position()
+if os.path.exists("home_pos.json"):
+    with open("home_pos.json", "r") as f:
+        FARM_START_POSITION = json.load(f)
+else:
+    FARM_START_POSITION = minescript.player_position()
+minescript.echo(f"Loaded home location: {FARM_START_POSITION}")
 
 FARMING_X_OFFSET = random.randint(1, 15) / 10
 FARMING_Z_OFFSET = random.randint(1, 15) / 10
@@ -50,8 +57,8 @@ def stop_attack(_coeff = 1):
     minescript.player_press_attack(False)
 
 def should_continue():
-    return ((minescript.player_position()[0] < (FARM_START_POSITION[0] + 186 - FARMING_X_OFFSET))
-    or (minescript.player_position()[2] < (FARM_START_POSITION[2] + 91 - FARMING_Z_OFFSET)))
+    return ((minescript.player_position()[0] < (FARM_START_POSITION[0] + 89 - FARMING_X_OFFSET))
+    or (minescript.player_position()[2] < (FARM_START_POSITION[2] + 186 - FARMING_Z_OFFSET)))
 
 while True:
     lane_start_position = minescript.player_position()
